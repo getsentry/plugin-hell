@@ -1,0 +1,49 @@
+// get all the tagged loggers
+{
+    "project":[1],
+    "selected_columns": [],
+    "aggregations": [
+        ["count()", "", "count"]
+    ],
+    "conditions": [
+        ["tags[environment]", "=", "prod"],
+        [
+             ["logger", "LIKE", "sentry.plugins.%"],
+             ["logger", "LIKE", "sentry.safe.%"]
+       ],
+             ["logger", "NOT IN", [
+                  "sentry.safe.eventuniqueuserfrequencycondition",
+                  "sentry.safe.eventfrequencycondition",
+                  "sentry.safe.eventattributecondition",
+                  "sentry.safe.webhooksplugin",
+                  "sentry.safe.template",
+                  "sentry.safe.function",
+                  "sentry.safe.type",
+                  "root"
+                   ]
+           ]
+    ],
+    "from_date": "2018-07-06T19:54:15",
+    "to_date": "2018-08-06T19:54:15",
+    "granularity": 3600,
+    "groupby": ["logger"],
+    "orderby": "-count"
+}
+
+// get all the events w/ the name PluginError
+{
+    "project": [1],
+    "selected_columns": [
+        ["arrayElement", ["exception_stacks.type", 1], "stackType"]
+    ],
+    "aggregations": [
+        ["count()", "", "count"]
+    ],
+    "conditions": [
+        [["notEmpty", ["exception_stacks.type"]], "=", 1],
+        ["stackType", "=", "PluginError"]
+    ],
+    "from_date": "2017-07-06T00:00:00",
+    "to_date": "2018-07-26T20:13:17",
+    "groupby": ["stackType"]
+}
